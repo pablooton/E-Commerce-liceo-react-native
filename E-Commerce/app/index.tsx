@@ -72,19 +72,15 @@ const styles = StyleSheet.create({
   },
   link: {
     marginTop:10,
-    color:"white",
+    color:"blue",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     color:"white",
   },
- 
-  linkText: {
-    color:"blue",
 
 
-  },
 });
 
 

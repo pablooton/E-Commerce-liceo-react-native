@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import FormDatePicker from "@/components/DateTimePicker";
 import FormInput from "@/components/FormInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -51,6 +52,20 @@ const RegisterScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
       <FormInput
+      control={control}
+      name="name"
+      autoCapitalize="none"
+      inputMode="text"
+      placeholder ="Enter your name"
+      />
+      <FormInput
+      control={control}
+      name="last_name"
+      autoCapitalize="none"
+      inputMode="text"
+      placeholder ="Enter your last name"
+      />
+      <FormInput
         control={control}
         name="nombreUsuario"
         autoCapitalize="none"
@@ -74,6 +89,11 @@ const RegisterScreen = () => {
         placeholder="Confirm your password"
         secureTextEntry
       />
+      
+      <FormDatePicker 
+      control={control}
+      name="birth_date" 
+      placeholder="Enter your birthdate" />
       <Link href="/" style={styles.link}>Already have an account? Login here</Link>
       <Button text="Register" onPress={handleSubmit(onSubmit)} />
     </View>
