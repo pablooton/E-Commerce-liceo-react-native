@@ -1,121 +1,118 @@
-import Button from "@/components/Button";
-import FormDatePicker from "@/components/DateTimePicker";
-import FormInput from "@/components/FormInput";
+import React from "react";
+import { ScrollView, StyleSheet, Text, Alert } from "react-native";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Link, router } from "expo-router";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { useForm } from "react-hook-form";
-import { Alert, StyleSheet, Text, View, ScrollView } from "react-native";
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
 import { z } from "zod";
+import "@/firebaseConfig";
+
+import FormInput from "@/components/FormInput";
+import FormDatePicker from "@/components/DateTimePicker";
+import Button from "@/components/Button";
+import { router } from "expo-router";
 
 
-const formSchema = z.object({
-  name: z.string().min(1, "Please enter your name"),
-  last_name: z.string().min(1, "Please enter your last name"),
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
-  birth_date: z.string().min(1, "Please enter your birthdate"),
-});
+const formSchema = z
+  .object({
+    name: z.string().min(1, "Ingrese su nombre"),
+    last_name: z.string().min(1, "Ingrese sus apellidos"),
+    email: z.string().email("Ingrese un email válido"),
+    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    confirmPassword: z.string().min(6, "Repita la contraseña"),
+    birthDate: z.date({
+      required_error: "La fecha de nacimiento es obligatoria",
+      invalid_type_error: "Seleccione una fecha válida",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
+  })
+  .refine((data) => {
+    const today = new Date();
+    let age = today.getFullYear() - data.birthDate.getFullYear();
+    const m = today.getMonth() - data.birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < data.birthDate.getDate())) age--;
+    return age >= 18;
+  }, {
+    message: "Debes ser mayor de 18 años",
+    path: ["birthDate"],
+  });
+
 
 const RegisterScreen = () => {
   const auth = getAuth();
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       last_name: "",
       email: "",
       password: "",
       confirmPassword: "",
-      birth_date: "",
+      birthDate: undefined, 
     },
-    resolver: zodResolver(formSchema),
     mode: "onBlur",
-    reValidateMode: "onBlur",
   });
 
-  const onSubmit = async (formData: any) => {
-    if (formData.password !== formData.confirmPassword) {
-      Alert.alert("Passwords do not match");
-      return;
-    }
-
+  
+  const onSubmit = async (data: any) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        formData.email,
-        formData.password
+        data.email,
+        data.password
       );
 
-      const { email } = userCredential.user;
-      if (email) {
-        await AsyncStorage.setItem("userEmail", email);
-        router.push("/");
-      }
-    } catch (error) {
-      Alert.alert("Error creating account");
+      const user = userCredential.user;
+
+      
+      await updateProfile(user, { displayName: `${data.name} ${data.last_name}` });
+
+      Alert.alert("Registro exitoso", `Bienvenido, ${data.name}`);
+      reset();
+
+      
+      router.push("/tabs/indexProducts");
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
     }
   };
 
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Text style={styles.title}>Registro</Text>
 
-      <FormInput control={control} name="name" placeholder="Enter your name" />
-      <FormInput control={control} name="last_name" placeholder="Enter your last name" />
-      <FormInput
-        control={control}
-        name="email"
-        autoCapitalize="none"
-        inputMode="email"
-        placeholder="Enter your email address"
-      />
-      <FormInput
-        control={control}
-        name="password"
-        secureTextEntry
-        placeholder="Enter your password"
-      />
-      <FormInput
-        control={control}
-        name="confirmPassword"
-        secureTextEntry
-        placeholder="Confirm your password"
-      />
-      <FormDatePicker
-        control={control}
-        name="birth_date"
-        placeholder="Enter your birthdate"
-      />
+      <FormInput control={control} name="name" placeholder="Nombre" />
+      <FormInput control={control} name="last_name" placeholder="Apellidos" />
+      <FormInput control={control} name="email" placeholder="Correo electrónico" inputMode="email" />
+      <FormInput control={control} name="password" placeholder="Contraseña" secureTextEntry />
+      <FormInput control={control} name="confirmPassword" placeholder="Confirmar contraseña" secureTextEntry />
+      <FormDatePicker control={control} name="birthDate" placeholder="Fecha de nacimiento" />
 
-      <Link href="/" style={styles.link}>
-        Already have an account? Login here
-      </Link>
-      <Button text="Register" onPress={handleSubmit(onSubmit)} />
+      <Button text="Registrarse" onPress={handleSubmit(onSubmit)} />
     </ScrollView>
   );
 };
 
+export default RegisterScreen;
+
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-    gap: 20,
+    alignItems: "center",
     backgroundColor: "#4FC3F7",
+    padding: 20,
+    gap: 15,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 10,
-  },
-  link: {
-    color: "blue",
-    marginTop: 10,
+    color: "white",
+    marginBottom: 20,
   },
 });
-
-export default RegisterScreen;

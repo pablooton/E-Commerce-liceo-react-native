@@ -41,7 +41,7 @@ const LoginScreen = () => {
         
         await AsyncStorage.setItem("userEmail", email);
         
-        router.push("/");
+        router.push("/tabs/indexProducts");
       }
     } catch (error) {
       Alert.alert(

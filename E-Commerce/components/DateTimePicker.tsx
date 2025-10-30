@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Controller } from "react-hook-form";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Platform, TextInput } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 type FormDatePickerProps = {
@@ -28,34 +28,51 @@ const FormDatePicker: React.FC<FormDatePickerProps> = ({ control, name, placehol
         required: "La fecha es obligatoria",
         validate: (value) => {
           if (!value) return "La fecha es obligatoria";
-          const date = new Date(value);
-          return isAdult(date) ? true : "Debes ser mayor de 18 años";
+          const dateValue = value instanceof Date ? value : new Date(value);
+          return isAdult(dateValue) ? true : "Debes ser mayor de 18 años";
         },
       }}
       render={({ field: { value, onChange }, fieldState: { error } }) => (
         <View style={styles.container}>
-          <TouchableOpacity style={styles.input} onPress={() => setShow(true)}>
-            <Text style={{ color: value ? "black" : "#aaa" }}>
-              {value ? new Date(value).toLocaleDateString() : placeholder || "Selecciona tu fecha"}
-            </Text>
-          </TouchableOpacity>
-
-          {show && (
-            <DateTimePicker
-              value={value ? new Date(value) : new Date()}
-              mode="date"
-              maximumDate={new Date()}
-              display="spinner"
-              onChange={(event, selectedDate) => {
-                setShow(false);
-                if (selectedDate) {
-                
-                  const dateString = selectedDate.toISOString().split("T")[0];
-                  onChange(dateString);
-                }
+          {/* ✅ Web: usar input tipo date */}
+          {Platform.OS === "web" ? (
+            <input
+              type="date"
+              value={value ? value.toISOString().split("T")[0] : ""}
+              onChange={(e) => onChange(new Date(e.target.value))}
+              style={{
+                padding: 10,
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: "gray",
+                width: "100%",
+                fontSize: 16,
               }}
+              placeholder={placeholder || "Selecciona tu fecha"}
             />
+          ) : (
+            <>
+              <TouchableOpacity style={styles.input} onPress={() => setShow(true)}>
+                <Text style={{ color: value ? "black" : "#aaa" }}>
+                  {value ? new Date(value).toLocaleDateString() : placeholder || "Selecciona tu fecha"}
+                </Text>
+              </TouchableOpacity>
+
+              {show && (
+                <DateTimePicker
+                  value={value ? new Date(value) : new Date()}
+                  mode="date"
+                  maximumDate={new Date()}
+                  display="spinner"
+                  onChange={(event, selectedDate) => {
+                    setShow(false);
+                    if (selectedDate) onChange(selectedDate); 
+                  }}
+                />
+              )}
+            </>
           )}
+
           {error && <Text style={styles.error}>{error.message}</Text>}
         </View>
       )}
