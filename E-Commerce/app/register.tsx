@@ -6,13 +6,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, router } from "expo-router";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useForm } from "react-hook-form";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View, ScrollView } from "react-native";
 import { z } from "zod";
 
+
 const formSchema = z.object({
+  name: z.string().min(1, "Please enter your name"),
+  last_name: z.string().min(1, "Please enter your last name"),
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+  birth_date: z.string().min(1, "Please enter your birthdate"),
 });
 
 const RegisterScreen = () => {
@@ -20,89 +24,83 @@ const RegisterScreen = () => {
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
+      name: "",
+      last_name: "",
       email: "",
       password: "",
       confirmPassword: "",
+      birth_date: "",
     },
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
   });
 
-  const onSubmit = async (formData: { email: string, password: string; confirmPassword: string; }) => {
+  const onSubmit = async (formData: any) => {
     if (formData.password !== formData.confirmPassword) {
       Alert.alert("Passwords do not match");
       return;
     }
 
-    createUserWithEmailAndPassword(auth, formData.email, formData.password)
-      .then(async (userCredential) => {
-        const { email } = userCredential.user;
-        if (email) {
-          await AsyncStorage.setItem("userEmail", email);
-          
-        }
-      })
-      .catch(() => {
-        Alert.alert("Error creating account");
-      });
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      const { email } = userCredential.user;
+      if (email) {
+        await AsyncStorage.setItem("userEmail", email);
+        router.push("/");
+      }
+    } catch (error) {
+      Alert.alert("Error creating account");
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Register</Text>
-      <FormInput
-      control={control}
-      name="name"
-      autoCapitalize="none"
-      inputMode="text"
-      placeholder ="Enter your name"
-      />
-      <FormInput
-      control={control}
-      name="last_name"
-      autoCapitalize="none"
-      inputMode="text"
-      placeholder ="Enter your last name"
-      />
+
+      <FormInput control={control} name="name" placeholder="Enter your name" />
+      <FormInput control={control} name="last_name" placeholder="Enter your last name" />
       <FormInput
         control={control}
-        name="nombreUsuario"
+        name="email"
         autoCapitalize="none"
-        autoCompleteType="email"
         inputMode="email"
         placeholder="Enter your email address"
       />
       <FormInput
         control={control}
         name="password"
-        autoCapitalize="none"
-        inputMode="text"
-        placeholder="Enter your password"
         secureTextEntry
+        placeholder="Enter your password"
       />
       <FormInput
         control={control}
         name="confirmPassword"
-        autoCapitalize="none"
-        inputMode="text"
-        placeholder="Confirm your password"
         secureTextEntry
+        placeholder="Confirm your password"
       />
-      
-      <FormDatePicker 
-      control={control}
-      name="birth_date" 
-      placeholder="Enter your birthdate" />
-      <Link href="/" style={styles.link}>Already have an account? Login here</Link>
+      <FormDatePicker
+        control={control}
+        name="birth_date"
+        placeholder="Enter your birthdate"
+      />
+
+      <Link href="/" style={styles.link}>
+        Already have an account? Login here
+      </Link>
       <Button text="Register" onPress={handleSubmit(onSubmit)} />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
@@ -110,11 +108,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#4FC3F7",
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
+    marginBottom: 10,
   },
   link: {
     color: "blue",
+    marginTop: 10,
   },
 });
 

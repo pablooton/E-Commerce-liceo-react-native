@@ -9,80 +9,95 @@ import { Alert, StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
 import "@/firebaseConfig";
 
-
-
-
-
 const formSchema = z.object({
-    email: z.string().email("Introduzca un email valido"),
-    password: z.string().min(6,"Introduzca una contraseña con al menos 6 carácteres")
-})
-const LoginScreen =() => {
+  email: z.string().email("Introduzca un email válido"),
+  password: z
+    .string()
+    .min(6, "Introduzca una contraseña con al menos 6 caracteres"),
+});
 
-    const auth = getAuth();
+const LoginScreen = () => {
+  const auth = getAuth();
 
-    const{control, handleSubmit} = useForm({
-        defaultValues: {
-            email:"",
-            password:"",
-        },
-        resolver:zodResolver(formSchema),
-        mode:"onBlur",
-        reValidateMode:"onBlur",
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: zodResolver(formSchema),
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+  });
 
-    });
-
-    const onSubmit = async (formData :{email: string,password: string}) =>{
-        signInWithEmailAndPassword(auth,formData.email,formData.password)
+  const onSubmit = async (formData: { email: string; password: string }) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      const { email } = userCredential.user;
+      if (email) {
         
+        await AsyncStorage.setItem("userEmail", email);
+        
+        router.push("/");
+      }
+    } catch (error) {
+      Alert.alert(
+        "Error al iniciar sesión",
+        "Email o contraseña incorrectos"
+      );
     }
-     return (
+  };
+
+  return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
+
       <FormInput
         control={control}
         name="email"
         autoCapitalize="none"
-        autoCompleteType="email"
         inputMode="email"
-        placeholder="Enter your email address"
+        placeholder="Introduce tu email"
       />
       <FormInput
         control={control}
         name="password"
         autoCapitalize="none"
         inputMode="text"
-        placeholder="Enter your password"
+        placeholder="Introduce tu contraseña"
         secureTextEntry
       />
-     <Link href="/register" style={styles.link}>Don't have an account? Register here</Link>
+
+      <Link href="/register" style={styles.link}>
+        ¿No tienes cuenta? Regístrate aquí
+      </Link>
+
       <Button text="Login" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
-    container: {
+  container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap:20,
+    gap: 20,
     backgroundColor: "#4FC3F7",
-  },
-  link: {
-    marginTop:10,
-    color:"blue",
+    padding: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    color:"white",
+    color: "white",
   },
-
-
+  link: {
+    marginTop: 10,
+    color: "blue",
+  },
 });
 
-
 export default LoginScreen;
-

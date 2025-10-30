@@ -26,25 +26,33 @@ const FormDatePicker: React.FC<FormDatePickerProps> = ({ control, name, placehol
       name={name}
       rules={{
         required: "La fecha es obligatoria",
-        validate: (value) => (value && isAdult(value) ? true : "Debes ser mayor de 18 años"),
+        validate: (value) => {
+          if (!value) return "La fecha es obligatoria";
+          const date = new Date(value);
+          return isAdult(date) ? true : "Debes ser mayor de 18 años";
+        },
       }}
       render={({ field: { value, onChange }, fieldState: { error } }) => (
         <View style={styles.container}>
           <TouchableOpacity style={styles.input} onPress={() => setShow(true)}>
             <Text style={{ color: value ? "black" : "#aaa" }}>
-              {value ? value.toLocaleDateString() : placeholder || "Selecciona tu fecha"}
+              {value ? new Date(value).toLocaleDateString() : placeholder || "Selecciona tu fecha"}
             </Text>
           </TouchableOpacity>
 
           {show && (
             <DateTimePicker
-              value={value || new Date()}
+              value={value ? new Date(value) : new Date()}
               mode="date"
               maximumDate={new Date()}
               display="spinner"
               onChange={(event, selectedDate) => {
                 setShow(false);
-                if (selectedDate) onChange(selectedDate);
+                if (selectedDate) {
+                
+                  const dateString = selectedDate.toISOString().split("T")[0];
+                  onChange(dateString);
+                }
               }}
             />
           )}
@@ -69,7 +77,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
     padding: 10,
     borderRadius: 10,
-    backgroundColor:"white",
+    backgroundColor: "white",
   },
   error: {
     color: "red",
