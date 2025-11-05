@@ -9,7 +9,7 @@ import "@/firebaseConfig";
 import FormInput from "@/components/FormInput";
 import FormDatePicker from "@/components/DateTimePicker";
 import Button from "@/components/Button";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 
 
 const formSchema = z
@@ -92,6 +92,12 @@ const RegisterScreen = () => {
       <FormInput control={control} name="confirmPassword" placeholder="Confirmar contraseña" secureTextEntry />
       <FormDatePicker control={control} name="birthDate" placeholder="Fecha de nacimiento" />
 
+      <Link href="/" style={styles.link}>
+    <Text style={styles.linkText}>
+        Tienes ya una cuenta, inicia sesión aquí.
+        </Text>
+    </Link>
+
       <Button text="Registrarse" onPress={handleSubmit(onSubmit)} />
     </ScrollView>
   );
@@ -115,4 +121,12 @@ const styles = StyleSheet.create({
     color: "white",
     marginBottom: 20,
   },
+  link: {
+    marginTop: 10,
+    color: "blue",
+  },
+  linkText:{
+    color:"blue",
+    marginTop:10,
+  }
 });
