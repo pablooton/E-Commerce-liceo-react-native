@@ -29,17 +29,30 @@ const FormDatePicker: React.FC<FormDatePickerProps> = ({ control, name, placehol
         validate: (value) => {
           if (!value) return "La fecha es obligatoria";
           const dateValue = value instanceof Date ? value : new Date(value);
+          if (isNaN(dateValue.getTime())) return "Fecha inválida";
           return isAdult(dateValue) ? true : "Debes ser mayor de 18 años";
         },
       }}
       render={({ field: { value, onChange }, fieldState: { error } }) => (
         <View style={styles.container}>
-          {/* ✅ Web: usar input tipo date */}
+          
           {Platform.OS === "web" ? (
             <input
               type="date"
-              value={value ? value.toISOString().split("T")[0] : ""}
-              onChange={(e) => onChange(new Date(e.target.value))}
+             value={
+                value instanceof Date && !isNaN(value.getTime())
+                  ? value.toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={(e) => {
+                const newDate = new Date(e.target.value);
+                 if (!isNaN(newDate.getTime())) {
+                  onChange(newDate);
+                } else {
+                  onChange(null);
+                }
+                
+              }}
               style={{
                 padding: 10,
                 borderRadius: 10,
@@ -48,25 +61,34 @@ const FormDatePicker: React.FC<FormDatePickerProps> = ({ control, name, placehol
                 width: "100%",
                 fontSize: 16,
               }}
+              max={new Date().toISOString().split("T")[0]} 
               placeholder={placeholder || "Selecciona tu fecha"}
             />
           ) : (
             <>
               <TouchableOpacity style={styles.input} onPress={() => setShow(true)}>
                 <Text style={{ color: value ? "black" : "#aaa" }}>
-                  {value ? new Date(value).toLocaleDateString() : placeholder || "Selecciona tu fecha"}
+                  {value instanceof Date && !isNaN(value.getTime())
+                    ? value.toLocaleDateString()
+                    : placeholder || "Selecciona tu fecha"}
                 </Text>
               </TouchableOpacity>
 
               {show && (
                 <DateTimePicker
-                  value={value ? new Date(value) : new Date()}
+                    value={
+                    value instanceof Date && !isNaN(value.getTime())
+                      ? value
+                      : new Date()
+                  }
                   mode="date"
                   maximumDate={new Date()}
                   display="spinner"
                   onChange={(event, selectedDate) => {
                     setShow(false);
-                    if (selectedDate) onChange(selectedDate); 
+                    if (selectedDate && !isNaN(selectedDate.getTime())) {
+                      onChange(selectedDate);
+                    }
                   }}
                 />
               )}
