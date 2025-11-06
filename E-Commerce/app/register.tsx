@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, Alert } from "react-native";
+import { ScrollView, StyleSheet, Text, Alert, Image } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
@@ -42,6 +42,7 @@ const formSchema = z
 
 const RegisterScreen = () => {
   const auth = getAuth();
+  const logoImage = require("../assets/images/Gemini_Generated_Image_gnks1zgnks1zgnks.png")
 
   const { control, handleSubmit, reset } = useForm({
     resolver: zodResolver(formSchema),
@@ -83,7 +84,7 @@ const RegisterScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Registro</Text>
+      <Image  source={logoImage} style={styles.image}/>
 
       <FormInput control={control} name="name" placeholder="Nombre" />
       <FormInput control={control} name="last_name" placeholder="Apellidos" />
@@ -128,5 +129,9 @@ const styles = StyleSheet.create({
   linkText:{
     color:"blue",
     marginTop:10,
-  }
+  },
+  image:{
+    width:150,
+    height:200,
+  },
 });

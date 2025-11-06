@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, router } from "expo-router";
 import { useForm } from "react-hook-form";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
 import "@/firebaseConfig";
 
@@ -18,6 +18,7 @@ const formSchema = z.object({
 
 const LoginScreen = () => {
   const auth = getAuth();
+  const logoImage = require("../assets/images/Gemini_Generated_Image_gnks1zgnks1zgnks.png")
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -53,9 +54,9 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-
-      <FormInput
+      <Image  source={logoImage} style={styles.image}/>
+        
+        <FormInput
         control={control}
         name="email"
         autoCapitalize="none"
@@ -98,6 +99,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: "blue",
   },
+  image:{
+    width:150,
+    height:200,
+  }
 });
 
 export default LoginScreen;
