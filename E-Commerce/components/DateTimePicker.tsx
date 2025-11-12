@@ -107,7 +107,7 @@ export default FormDatePicker;
 const styles = StyleSheet.create({
   container: {
     gap: 10,
-    width: "100%",
+    width: "75%",
     marginVertical: 8,
   },
   input: {
@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     backgroundColor: "white",
+    
   },
   error: {
     color: "red",
