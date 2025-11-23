@@ -75,7 +75,7 @@ const RegisterScreen = () => {
       reset();
 
       
-      router.push("/tabs/indexProducts");
+      router.push("/tabs/products/indexProducts");
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }

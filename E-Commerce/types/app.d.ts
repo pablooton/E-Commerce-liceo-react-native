@@ -9,6 +9,7 @@ export interface Product {
   category: ProductCategory; 
   
   color?: string; 
+  [key: string]: any;
 }
 
 
@@ -16,6 +17,7 @@ export interface Product {
 
 
 export type ProductCategory =  'Ropa'  | 'Deportes' | 'Sneakers';
+
 
 
 

@@ -42,7 +42,7 @@ const LoginScreen = () => {
         
         await AsyncStorage.setItem("userEmail", email);
         
-        router.push("/tabs/indexProducts");
+        router.push("/tabs/products/indexProducts");
       }
     } catch (error) {
       Alert.alert(
