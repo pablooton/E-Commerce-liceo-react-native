@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { FlatList, StyleSheet, View, Text, ActivityIndicator, Keyboard, ScrollView } from "react-native";
-import { collection, getDocs, getFirestore, query, where, limit, startAfter } from "firebase/firestore";
-import { router } from "expo-router";
+import FilterBadge from "@/components/FilterBadge";
 import ProductCard from "@/components/ProductCard";
 import SearchBar from "@/components/SearchBar";
-import FilterBadge from "@/components/FilterBadge";
-import { Product, ProductSnapshotData, ProductCategory } from "@/types/app";
+import { Product, ProductCategory, ProductSnapshotData } from "@/types/app";
+import { router } from "expo-router";
+import { collection, getDocs, getFirestore, limit, query, startAfter, where } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, Keyboard, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const ITEMS_PER_PAGE = 10;
 type FilterCategory = ProductCategory | 'Todos';
@@ -134,7 +134,7 @@ const ProductGridScreen = () => {
         contentContainerStyle={styles.categoryContent}
       >
         {categories.map((cat) => (
-          <FilterBadge
+          <FilterBadge 
             key={cat}
             label={cat}
             active={cat === activeCategory}

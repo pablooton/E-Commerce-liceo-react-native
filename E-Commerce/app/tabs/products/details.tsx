@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Alert, Button, Image } from "react-native";
+import { Product } from "@/types/app";
 import { useLocalSearchParams } from "expo-router";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
-import { Product } from "@/types/app";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Button, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
-const addToCart = (product: Product) => {
-  Alert.alert("🛒 Producto Añadido", `${product.name} se ha añadido al carrito.`);
-};
+
+import { useCart } from "../../contexts/CartContext";
 
 export default function ProductDetailsScreen() {
   const db = getFirestore();
   const { id } = useLocalSearchParams();
   const productId = Array.isArray(id) ? id[0] : id;
+  
+  
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,6 +47,17 @@ export default function ProductDetailsScreen() {
     loadProductDetails();
   }, [productId]);
 
+  
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(product);
+      Alert.alert(
+        "¡Añadido!", 
+        `${product.name} ya está en tu carrito.`
+      );
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -62,17 +75,7 @@ export default function ProductDetailsScreen() {
     );
   }
 
-  if (!product) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>No se pudo cargar la información del producto.</Text>
-      </View>
-    );
-  }
-
-  const productKeys = Object.keys(product!); // Corrección: Usamos '!' para asegurar que no es null
-  const basicKeys = ['id', 'name', 'price', 'description', 'image', 'category'];
-  const additionalDetails = productKeys.filter(key => !basicKeys.includes(key));
+  if (!product) return null;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -98,16 +101,16 @@ export default function ProductDetailsScreen() {
       </View>
 
       {product.color && (
-  <View style={styles.section}>
-    <Text style={styles.sectionTitle}>Color</Text>
-    <Text style={styles.descriptionText}>{product.color}</Text> 
-  </View>
-)}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Color</Text>
+          <Text style={styles.descriptionText}>{product.color}</Text> 
+        </View>
+      )}
 
       <View style={styles.buttonContainer}>
         <Button
           title="Añadir al Carrito"
-          onPress={() => addToCart(product)}
+          onPress={handleAddToCart} 
           color="#FF5722"
         />
       </View>
@@ -177,25 +180,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     lineHeight: 24,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f7f7f7',
-  },
-  detailKey: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#555',
-    flex: 1,
-  },
-  detailValue: {
-    fontSize: 15,
-    color: '#777',
-    flex: 2,
-    textAlign: 'right',
   },
   buttonContainer: {
     marginTop: 20,

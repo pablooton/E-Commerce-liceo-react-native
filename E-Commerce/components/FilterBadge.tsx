@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 
 type FilterBadgeProps = {
   label: string;
@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 8,
-    // Sombra ligera para iOS y Android (opcional)
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
@@ -38,12 +37,12 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   badgeActive: {
-    backgroundColor: "#4FC3F7", // Azul claro (color usado para la actividad)
+    backgroundColor: "#4FC3F7", 
     borderWidth: 1,
     borderColor: "#03A9F4",
   },
   badgeInactive: {
-    backgroundColor: "#F5F5F5", // Gris muy claro
+    backgroundColor: "#F5F5F5", 
     borderWidth: 1,
     borderColor: "#DDDDDD",
   },
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   labelText: {
-    color: "#333", // Color de texto oscuro por defecto
+    color: "#333", 
     fontWeight: "600",
     textAlign: "center",
     fontSize: 14,

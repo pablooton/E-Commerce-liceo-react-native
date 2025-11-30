@@ -20,7 +20,7 @@ const TabLayout = () => {
   useEffect(() => {
     const getUserEmail = async () => {
       setLoadingUser(true);
-      const email = await AsyncStorage.getItem("userEmail"); 
+      const email = await AsyncStorage.getItem("userEmail");
       setUserEmail(email);
       setLoadingUser(false);
     };
@@ -30,7 +30,7 @@ const TabLayout = () => {
   if (loadingUser) {
     return (
       <View style={styles.container}>
-        <Text style={styles.loading}>Cargando usuario...</Text>
+        <Text style={styles.loading}>Charging users...</Text>
       </View>
     );
   }
@@ -38,18 +38,18 @@ const TabLayout = () => {
   if (!userEmail) {
     return (
       <View style={styles.container}>
-        <Text style={styles.error}>Por favor, inicia sesión</Text>
+        <Text style={styles.error}>Please, log in</Text>
         <Link href="/" style={styles.link} asChild>
-          <Pressable><Text style={styles.linkText}>Ir a inicio</Text></Pressable>
+          <Pressable><Text style={styles.linkText}>Go to start</Text></Pressable>
         </Link>
       </View>
     );
   }
 
   const logout = () => {
-    Alert.alert("Cerrar Sesión", "¿Salir de la cuenta?", [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Cerrar Sesión", onPress: () => {
+    Alert.alert("Close session", "Close session?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Close session", onPress: () => {
           const auth = getAuth();
           signOut(auth).then(async () => {
             await AsyncStorage.removeItem("userEmail");
@@ -61,31 +61,28 @@ const TabLayout = () => {
   };
 
   const goToForm = () => {
-    const path = `${pathname}/form` as Href;
+    const path = `${pathname}/form `as Href;
     router.push(path);
   };
 
-  const validPathname = () => pathname === "/products" || pathname === "/cart";
+  const validPathname = () => pathname === "/indexProducts" || pathname === "/cart";
 
-  const LogoutButtonLeft = () => (
-      <Pressable onPress={logout}>
-          {({ pressed }) => (
-              <FontAwesome name="sign-out" size={25} color="black" style={{ marginLeft: 15, opacity: pressed ? 0.5 : 1 }} />
-          )}
-      </Pressable>
-  );
+
 
   return (
-    <Tabs>
+    <Tabs screenOptions={
+      {
+        headerShown: false
+      }
+    }>
       <Tabs.Screen
         name="products"
         options={{
           title: "Tienda",
-          headerShown: true, // ESTO MUESTRA "TIENDA"
-          headerTitle: "Tienda", 
+          headerShown: true,
+          headerTitle: "Tienda",
           tabBarIcon: ({ color }) => <TabBarIcon name="shopping-bag" color={color} />,
-          headerLeft: () => <LogoutButtonLeft />,
-          headerRight: () => validPathname() && pathname === "/products" && (
+          headerRight: () => validPathname() && pathname === "/indexProducts" && (
               <Pressable onPress={goToForm}>
                 {({ pressed }) => (
                   <FontAwesome name="plus-circle" size={25} color="black" style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />
@@ -95,14 +92,19 @@ const TabLayout = () => {
         }}
       />
       
+      
       <Tabs.Screen
         name="cart"
         options={{
-          title: "Carrito",
+          title: "Cart",
           headerShown: true,
-          headerTitle: "Carrito",
-          tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
-          headerLeft: () => <LogoutButtonLeft />,
+          headerTitle: "Cart",
+          tabBarIcon: ({ color }) => <FontAwesome 
+                name="shopping-cart"
+                size={28} 
+                color={color} 
+                style={{ marginBottom: -3 }} 
+            />,
           headerRight: () => validPathname() && pathname === "/cart" && (
               <Pressable onPress={goToForm}>
                 {({ pressed }) => (
