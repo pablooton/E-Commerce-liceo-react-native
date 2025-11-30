@@ -59,34 +59,37 @@ const TabLayout = () => {
         }},
     ]);
   };
+  const LogoutButtonLeft = () => (
+      <Pressable onPress={logout}>
+          {({ pressed }) => (
+              <FontAwesome name="sign-out" size={25} color="black" style={{ marginLeft: 15, opacity: pressed ? 0.5 : 1 }} />
+          )}
+      </Pressable>
+  );
 
   const goToForm = () => {
     const path = `${pathname}/form `as Href;
     router.push(path);
   };
+  const isDetailsScreen = pathname.includes('/products/details');
 
   const validPathname = () => pathname === "/indexProducts" || pathname === "/cart";
 
-
-
   return (
-    <Tabs screenOptions={
-      {
-        headerShown: false
-      }
-    }>
+    <Tabs>
       <Tabs.Screen
         name="products"
         options={{
           title: "Tienda",
-          headerShown: true,
+          headerShown: !isDetailsScreen,
           headerTitle: "Tienda",
+          headerLeft: () => <LogoutButtonLeft />,
           tabBarIcon: ({ color }) => <TabBarIcon name="shopping-bag" color={color} />,
           headerRight: () => validPathname() && pathname === "/indexProducts" && (
               <Pressable onPress={goToForm}>
-                {({ pressed }) => (
-                  <FontAwesome name="plus-circle" size={25} color="black" style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />
-                )}
+                  {({ pressed }) => (
+                      <FontAwesome name="plus-circle" size={25} color="black" style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />
+                  )}
               </Pressable>
             ),
         }}
@@ -96,22 +99,12 @@ const TabLayout = () => {
       <Tabs.Screen
         name="cart"
         options={{
-          title: "Cart",
-          headerShown: true,
-          headerTitle: "Cart",
-          tabBarIcon: ({ color }) => <FontAwesome 
-                name="shopping-cart"
-                size={28} 
-                color={color} 
-                style={{ marginBottom: -3 }} 
-            />,
-          headerRight: () => validPathname() && pathname === "/cart" && (
-              <Pressable onPress={goToForm}>
-                {({ pressed }) => (
-                  <FontAwesome name="plus-circle" size={25} color="black" style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }} />
-                )}
-              </Pressable>
-            ),
+          title: "Carrito",
+         
+          headerShown: false, 
+          
+          tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />, 
+          
         }}
       />
     </Tabs>
