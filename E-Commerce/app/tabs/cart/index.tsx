@@ -55,7 +55,7 @@ export default function CartScreen() {
         <View style={styles.container}>
             {cart.length === 0 ? (
                 <View style={styles.emptyContainer}>
-                    <Ionicons name="cart-outline" size={80} color="#ddd" />
+                    <Ionicons name="cart-outline" size={80} color="#ccc" />
                     <Text style={styles.emptyText}>El carrito está vacío</Text>
                 </View>
             ) : (
@@ -85,24 +85,24 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#E1F5FE', 
     },
     listContent: {
         padding: 15,
     },
     cartItem: {
         flexDirection: 'row',
-        backgroundColor: '#fff',
+        backgroundColor: '#fff', 
         borderRadius: 10,
         marginBottom: 15,
         padding: 10,
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
+        borderColor: '#ddd',
         borderWidth: 1,
-        borderColor: '#f0f0f0'
     },
     itemImage: {
         width: 80,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     },
     itemCategory: {
         fontSize: 12,
-        color: '#888',
+        color: '#999',
         marginBottom: 4,
     },
     itemPrice: {
@@ -138,12 +138,12 @@ const styles = StyleSheet.create({
     quantityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#F5F5F5',
         borderRadius: 20,
         padding: 2,
     },
     qtyButton: {
-        backgroundColor: '#FF5722',
+        backgroundColor: '#4FC3F7',
         width: 24,
         height: 24,
         borderRadius: 12,
@@ -167,12 +167,12 @@ const styles = StyleSheet.create({
     emptyText: {
         marginTop: 10,
         fontSize: 18,
-        color: '#888',
+        color: '#777',
     },
     footer: {
         padding: 20,
         borderTopWidth: 1,
-        borderTopColor: '#eee',
+        borderTopColor: '#ccc',
         backgroundColor: '#fff',
     },
     totalRow: {
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
         color: '#FF5722',
     },
     checkoutButton: {
-        backgroundColor: '#FF5722',
+        backgroundColor: '#FF5722', 
         paddingVertical: 15,
         borderRadius: 8,
         alignItems: 'center',
