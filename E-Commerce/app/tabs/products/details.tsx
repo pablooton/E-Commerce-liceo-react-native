@@ -7,6 +7,7 @@ import { ActivityIndicator, Alert, Button, Image, ScrollView, StyleSheet, Text, 
 
 import { useCart } from "../../contexts/CartContext";
 
+
 export default function ProductDetailsScreen() {
     const db = getFirestore();
     const { id } = useLocalSearchParams();
@@ -110,8 +111,8 @@ export default function ProductDetailsScreen() {
             <View style={styles.buttonContainer}>
                 <Button
                     title="Añadir al Carrito"
-                    onPress={handleAddToCart} 
                     color="#FF5722"
+                    onPress={handleAddToCart}
                 />
             </View>
             
@@ -123,7 +124,7 @@ export default function ProductDetailsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#F5F8FF', 
     },
     content: {
         paddingHorizontal: 15,
@@ -134,14 +135,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#E1F5FE', 
+        backgroundColor: '#E3F2FD', 
     },
     loadingText: {
         marginTop: 10,
-        color: '#4FC3F7', 
+        color: '#2196F3',
     },
     errorText: {
-        color: 'red',
+        color: '#D32F2F', 
         fontSize: 16,
     },
     image: {
@@ -149,23 +150,23 @@ const styles = StyleSheet.create({
         height: 300,
         borderRadius: 8,
         marginBottom: 15,
-        backgroundColor: '#f0f0f0', 
+        backgroundColor: '#BBDEFB',
     },
     header: {
         marginBottom: 15,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: '#B0BEC5', 
         paddingBottom: 10,
     },
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#1A237E', 
     },
     price: {
         fontSize: 24,
         fontWeight: '600',
-        color: '#FF5722', 
+        color: '#039BE5', 
         marginTop: 5,
     },
     section: {
@@ -174,12 +175,12 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#444',
+        color: '#304FFE', 
         marginBottom: 8,
     },
     descriptionText: {
         fontSize: 16,
-        color: '#666',
+        color: '#455A64', 
         lineHeight: 24,
     },
     buttonContainer: {
